@@ -54,7 +54,7 @@ jobs:
       - name: Sonarqube Code Quality Analysis
         uses: SonarSource/sonarqube-scan-action@v6.0.0
         with:
-          projectBaseDir: .
+          projectBaseDir: "./src"
           args: |
               -Dsonar.projectKey=WebApp
               -Dsonar.sources=.
