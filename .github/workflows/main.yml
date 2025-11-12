@@ -47,8 +47,25 @@ jobs:
           fetch-depth: 0
           retention-days: 1
 
+  Testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v5.0.0
+
+      - name: Nodejs Setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+          cache: npm
+
+      - name: Test
+        run: |
+          npm install
+          npm run test 
+
   SonarQube:
-    # needs: Code-Check
+    needs: [Code-Check, Testing]
     runs-on: ubuntu-latest
     steps:
       - name: Code Checkout
@@ -72,4 +89,7 @@ jobs:
         timeout-minutes: 3
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  
+
+
 
