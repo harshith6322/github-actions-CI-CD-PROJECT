@@ -1,0 +1,32 @@
+name: CI/CD Pipeline
+
+
+on:
+  push:
+    branches: [main, prod]
+    paths:
+      - "**"
+      - "!kubernets/deployment.yml"
+
+  pull_request:
+    branches: [main,prod]
+    types:
+      - opened
+      - synchronize
+
+
+
+
+
+jobs:
+  Code-Check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v5.0.0
+
+      - name: Nodejs Setup
+        uses: actions/setup-node
+        with:
+           node-version: "21"
+           cache: npm
