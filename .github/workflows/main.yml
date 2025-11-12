@@ -178,7 +178,8 @@ jobs:
 
       - name: Run Container and Verify Health
         run: |
-          docker run -d --name react-app -p 3000:3000 ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+          docker pull ghcr.io/harshith6322/github-actions-ci-cd-project:sha-68ecb40ba9a40825e6a833aaf8c56a3068217455
+          docker run -d --name react-app -p 80:80 github-actions-ci-cd-project:${{github.sha}}
           echo "⏳ Waiting for container to start..."
           sleep 5
           docker ps
