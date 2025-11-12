@@ -114,6 +114,7 @@ jobs:
         with:
           name: webapp_build
           path: dist/
+          retention-days: 1
 
   docker:
     name: Docker Build and Push
@@ -178,7 +179,7 @@ jobs:
 
       - name: Run Container and Verify Health
         run: |
-          docker pull ghcr.io/harshith6322/github-actions-ci-cd-project:sha-68ecb40ba9a40825e6a833aaf8c56a3068217455
+          docker pull ghcr.io/harshith6322/github-actions-ci-cd-project:${{github.sha}}
           docker run -d --name react-app -p 80:80 github-actions-ci-cd-project:${{github.sha}}
           echo "⏳ Waiting for container to start..."
           sleep 5
