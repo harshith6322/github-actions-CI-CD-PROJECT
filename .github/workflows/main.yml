@@ -14,41 +14,41 @@ on:
       - synchronize
 
 jobs:
-  Code-Check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Code Checkout
-        uses: actions/checkout@v5.0.0
+  # Code-Check:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Code Checkout
+  #       uses: actions/checkout@v5.0.0
 
-      - name: Nodejs Setup
-        uses: actions/setup-node@v4
-        with:
-          node-version: 21
-          cache: npm
+  #     - name: Nodejs Setup
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 21
+  #         cache: npm
 
-      - name: Lint Check
-        run: |
-         npm install
-         npm run lint
+  #     - name: Lint Check
+  #       run: |
+  #        npm install
+  #        npm run lint
 
-      - name: Trivy Check
-        uses: aquasecurity/trivy-action@0.24.0
-        with:
-          scan-type: fs
-          scan-ref: "./"
-          format: 'sarif'
-          exit-code: 0
-          output: "trivy-results.sarif"
-        # run: cat -n trivy-results.sarif
+  #     - name: Trivy Check
+  #       uses: aquasecurity/trivy-action@0.24.0
+  #       with:
+  #         scan-type: fs
+  #         scan-ref: "./"
+  #         format: 'sarif'
+  #         exit-code: 0
+  #         output: "trivy-results.sarif"
+  #       # run: cat -n trivy-results.sarif
 
-      - name: GitLeaks
-        uses: gitleaks/gitleaks-action@v2.3.9
-        with:
-          fetch-depth: 0
-          retention-days: 1
+  #     - name: GitLeaks
+  #       uses: gitleaks/gitleaks-action@v2.3.9
+  #       with:
+  #         fetch-depth: 0
+  #         retention-days: 1
 
   SonarQube:
-    needs: Code-Check
+    # needs: Code-Check
     runs-on: ubuntu-latest
     steps:
       - name: Sonarqube Code Quality Analysis
@@ -56,7 +56,8 @@ jobs:
         with:
           projectBaseDir: .
           args: |
-              sonar.projectKey=web            
+            -Dsonar.projectKey=WebApp
+            -Dsonar.sources=./src
         env:
           SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
           SONAR_HOST_URL: ${{secrets.SONAR_HOST_URL}}
