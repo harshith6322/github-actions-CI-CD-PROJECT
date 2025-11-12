@@ -56,14 +56,13 @@ jobs:
         with:
           projectBaseDir: .
           args: |
-              -Dsonar.projectKey=WebApp
-              -Dsonar.sources="./src"
-              
+              sonar.projectKey=web            
         env:
           SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
           SONAR_HOST_URL: ${{secrets.SONAR_HOST_URL}}
 
-      - uses: SonarSource/sonarqube-quality-gate-action@v1
+      - name:  QualityGate
+        uses: SonarSource/sonarqube-quality-gate-action@v1
         timeout-minutes: 2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
