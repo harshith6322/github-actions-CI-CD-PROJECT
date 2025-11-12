@@ -1,0 +1,71 @@
+name: CI/CD Pipeline
+
+
+on:
+  push:
+    branches: [main, prod]
+    paths:
+      - "**"
+      - "!kubernets/deployment.yml"
+
+  pull_request:
+    branches: [main, prod]
+    types:
+      - opened
+      - synchronize
+
+
+
+
+
+jobs:
+  Code-Check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v5.0.0
+
+      - name: Nodejs Setup
+        uses: actions/setup-node
+        with:
+           node-version: 21
+           cache: npm
+      
+      - name: Lint Check
+        run: npm run lint
+
+      - name: Trivy Check
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          skip-setup-trivy: true
+
+      - name: GitLeaks
+        uses: gitleaks/gitleaks-action@v2.3.9
+        with:
+          fetch-depth: 0
+          retention-days: 1
+    
+  # SonarQube:
+  #   needs: Code-Check
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Sonarqube Code Quality Analysis
+  #       uses: SonarSource/sonarqube-scan-action@v6.0.0
+  #       with:
+  #         projectBaseDir: .
+  #         args: |
+  #             -Dsonar.projectKey=WebApp
+  #             -Dsonar.sources=.
+  #       env:
+  #         SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
+  #         SONAR_HOST_URL: ${{secrets.SONAR_HOST_URL}}
+
+
+      
+        
+
+
+
