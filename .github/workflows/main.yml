@@ -193,7 +193,7 @@ jobs:
 
   notify_on_success: 
     runs-on: ubuntu-latest
-    needs: docker
+    needs: [ docker , Code-Check, Testing, SonarQube, Build]
     if: ${{ needs.docker.result == 'success' }}
     steps:
       - name: Send email
@@ -206,7 +206,22 @@ jobs:
           subject: "✅ Build success  ${{ github.repository }}"
           to: ${{env.email_send_to}}
           from: "GitHub Actions <noreply@example.com>"
-          body: "success"
+          body: |
+            ✅ Build Success!
+
+            • Pipeline: ${{ github.workflow }}
+            • Job: ${{ github.job }}
+            • Repository: ${{ github.repository }}
+            • Branch: ${{ github.ref_name }}
+            • Commit: ${{ github.sha }}
+            • Commit Author: ${{ github.actor }}
+            • Build Number: ${{ github.run_number }}
+            • Run Attempt: ${{ github.run_attempt }}
+            • Triggered By: ${{ github.event_name }}
+
+            👉 View full pipeline logs:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
           # attachments: |
           #   trivy-results.sarif
           #   trivy_image_result.sarif
@@ -214,7 +229,7 @@ jobs:
 
   notify_on_fail: 
     runs-on: ubuntu-latest
-    needs: docker
+    needs: [ docker , Code-Check, Testing, SonarQube, Build]
     if: ${{ needs.docker.result != 'success' }}
     steps:
       - name: Send email
@@ -227,7 +242,23 @@ jobs:
           subject: "❌ Build Failed  ${{ github.repository }}"
           to: ${{env.email_send_to}}
           from: "GitHub Actions <noreply@example.com>"
-          body: "failed"
+          body: |
+            ❌ Build Failed!
+
+            • Pipeline: ${{ github.workflow }}
+            • Job: ${{ github.job }}
+            • Repository: ${{ github.repository }}
+            • Branch: ${{ github.ref_name }}
+            • Commit: ${{ github.sha }}
+            • Commit Author: ${{ github.actor }}
+            • Build Number: ${{ github.run_number }}
+            • Run Attempt: ${{ github.run_attempt }}
+            • Triggered By: ${{ github.event_name }}
+
+            📝 Please review the logs & artifacts attached.
+
+            👉 Open failed pipeline:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
   #         # attachments: |
   #         #   trivy-results.sarif
   #         #   trivy_image_result.sarif
