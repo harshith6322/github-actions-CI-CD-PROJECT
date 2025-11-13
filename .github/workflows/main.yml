@@ -196,7 +196,22 @@ jobs:
     needs: docker
     if: ${{ needs.docker.result == 'success' }}
     steps:
-      # - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Prepare HTML template
+        run: |
+          cp .github/email-templates/status-email-template.html email.html
+
+      - name: Replace variables in HTML
+        run: |
+            sed -i "s|\${STATUS}|FAILURE|g" email.html
+            sed -i "s|\${REPO}|${{ github.repository }}|g" email.html
+            sed -i "s|\${BRANCH}|${{ github.ref_name }}|g" email.html
+            sed -i "s|\${ACTOR}|${{ github.actor }}|g" email.html
+            sed -i "s|\${COMMIT}|${{ github.sha }}|g" email.html
+            sed -i "s|\${RUN_URL}|${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|g" email.html
+
+
       - name: Send email
         uses: dawidd6/action-send-mail@v6
         with:
@@ -208,7 +223,7 @@ jobs:
           to: ${{env.email_send_to}}
           from: "GitHub Actions <noreply@example.com>"
           body: "success"
-          # html_body: file://
+          html_body: file://email.html
           # attachments: |
           #   trivy-results.sarif
           #   trivy_image_result.sarif
@@ -219,7 +234,22 @@ jobs:
     needs: docker
     if: ${{ needs.docker.result != 'success' }}
     steps:
-      # - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Prepare HTML template
+        run: |
+          cp .github/email-templates/status-email-template.html email.html
+
+      - name: Replace variables in HTML
+        run: |
+            sed -i "s|\${STATUS}|FAILURE|g" email.html
+            sed -i "s|\${REPO}|${{ github.repository }}|g" email.html
+            sed -i "s|\${BRANCH}|${{ github.ref_name }}|g" email.html
+            sed -i "s|\${ACTOR}|${{ github.actor }}|g" email.html
+            sed -i "s|\${COMMIT}|${{ github.sha }}|g" email.html
+            sed -i "s|\${RUN_URL}|${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|g" email.html
+
+
       - name: Send email
         uses: dawidd6/action-send-mail@v6
         with:
@@ -231,7 +261,7 @@ jobs:
           to: ${{env.email_send_to}}
           from: "GitHub Actions <noreply@example.com>"
           body: "failed"
-          # html_body: file://README.html
+          html_body: file://email.html
   #         # attachments: |
   #         #   trivy-results.sarif
   #         #   trivy_image_result.sarif
